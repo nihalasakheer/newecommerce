@@ -1,0 +1,64 @@
+{% extends 'main2.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Sign UP</title>
+
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}" media="screen" type="text/css" />
+
+</head>
+
+
+    
+ 
+
+    <body>
+        <div class="row">
+
+            <form method="POST">
+             {% csrf_token %}
+             
+             <div class="text-center">
+             <input type="text" name="firstname" placeholder="firstname">
+            </div><br>
+            <div class="text-center">
+             <input type="text" name="lastname" placeholder="lastname">
+            </div><br>
+            <div class="text-center">
+             <input type="email" name="email" placeholder="email">
+            </div><br>
+             <div class="text-center">
+             <input type="text" name="username" placeholder="username">
+            </div><br>
+             <div class="text-center">
+             <input type="password" name="password1" placeholder="password">
+            </div><br>
+             <div class="text-center">
+             <input type="password" name="password2" placeholder="conform password">
+            </div><br>
+            <div class="text-center">
+              <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+          </div>
+          
+            </form>
+            <div>
+              {% for message in messages %}
+               <h3> {{message}}</h3>
+              {% endfor %}
+            </div>
+            </div>
+      
+        </body>
+      </html>
+      
+      </body>
+      
+      </html>
+
+{% endblock %}

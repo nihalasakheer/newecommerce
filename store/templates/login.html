@@ -1,0 +1,23 @@
+{% extends 'main2.html' %}
+{% load static %}
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+       <div class="text-center">
+         <input type="text" name="username" placeholder="username">
+        </div><br>
+        <div class="text-center">
+         <input type="text" name="password" placeholder="password">
+        </div><br>
+        <div class=" text-center">
+            <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+        </div>
+    <div>
+</form><br>
+<p>Not a member? <a href="{% url 'signup' %}">Sign up now</a><span class="fontawesome-arrow-right"></span></p>
+<div>
+    {% for message in messages %}
+      <h3> {{message}}</h3>
+    {% endfor %}
+   </div>
+ {% endblock content %}
