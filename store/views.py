@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import *
 import json
+import datetime
 # Create your views here.
 
 
@@ -67,18 +68,48 @@ def updateItem(request):
      customer = request.user.customer
      product = Product.objects.get(id=productId)
      order, created = Order.objects.get_or_create(customer=customer, complete=False)
-     orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+     orderitem, created = OrderItem.objects.get_or_create(order=order, product=product)
 
      if action == 'add':
-          orderItem.quantity = (orderItem.quantity +1)
+          orderitem.quantity = (orderitem.quantity +1)
      elif action == 'remove':
-          orderItem.quantity = (orderItem.quantity -1)
-          
-     orderItem.save()
-     if orderItem.quantity <= 0:
-          OrderItem.delete()
+          orderitem.quantity = (orderitem.quantity -1)
 
+     orderitem.save()
+
+     if orderitem.quantity <= 0:
+          orderitem.delete()
      return JsonResponse('item was added', safe=False)
+
+
+def processOrder(request):
+      transacton_Id = datetime.datetime.now().timestamp()
+      data = json.loads(request.body)
+
+      if request.user.is_authenticated:
+           customer = request.user.customer
+           order, created = Order.objects.get_or_create(customer=customer, complete=False)
+           total = float(data['form']['total'])
+           order.transacton_Id= transacton_Id
+
+           if total == order.get_cart_total:
+                order.complete = True
+           order.save()
+
+           if order.shipping == True:
+                ShippingAddress.objects.create(
+                     customer=customer,
+                     order=order,
+                     address=data['shipping']['address'],
+                     city=data['shipping']['city'],
+                     state=data['shipping']['state'],
+                     zipcode=data['shipping']['zipcode']
+                )     
+
+      else:
+           print('User is not logged in....')     
+      return JsonResponse('payment complete!', safe=False)
+
 
 
 # def login(request):
