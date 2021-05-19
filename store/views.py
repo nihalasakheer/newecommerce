@@ -32,10 +32,23 @@ def cart(request):
           items = order.orderitem_set.all()
           cartItems = order.get_cart_items
      else:
-          print("no user")
-          items = [] 
-          order = {'get_cart_total':0, 'get_cart_items':0,'shipping':False} 
-          cartItems = order['get_cart_items']   
+         try:
+            cart = json.loads(request.COOKIES['cart'])
+         except:
+              cart={}   
+              print('CART:', cart)
+         items = [] 
+         order = {'get_cart_total':0, 'get_cart_items':0,'shipping':False} 
+         cartItems = order['get_cart_items']  
+
+         for i in cart:
+               cartItems += cart[i]['quantity'] 
+
+               products = Product.objects.get(id=i)
+               total = (products.price * cart [i]['quantity'])
+
+               order['get_cart_total'] += total
+               order['get_cart_items'] += cart [i]['quantity']
      context = {
           'items': items,
           'order':order,
